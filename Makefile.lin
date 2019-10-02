@@ -27,9 +27,10 @@ resave: $(PROJUCER)
 	echo "include ../../build/lv2.mak" >> Builds/LinuxMakefile/Makefile
 
 zip: build
-	mkdir -p products/surge-fx
-	cp -f Builds/LinuxMakefile/build/SurgeEffectsBank products/surge-fx
-	cp -f Builds/LinuxMakefile/build/SurgeEffectsBank.so products/surge-fx
+	mkdir -p products/surge-fx/VST
+	mkdir -p products/surge-fx/LV2
+	cp -f Builds/LinuxMakefile/build/SurgeEffectsBank.so products/surge-fx/VST/
+	cp -rf Builds/LinuxMakefile/build/SurgeEffectsBank.lv2 products/surge-fx/LV2/
 	cd products && tar cvzf surge-fx-$(SURGE_FX_VERSION)-$(BUILDDATE).tar.gz surge-fx
 	rm -rf products/surge-fx
 
