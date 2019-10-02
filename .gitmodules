@@ -2,3 +2,6 @@
 	path = deps/surge
 	url = https://github.com/surge-synthesizer/surge.git
 
+[submodule "thirdparty/juce"]
+	path = thirdparty/JUCE
+	url = https://github.com/DISTRHO/juce.git

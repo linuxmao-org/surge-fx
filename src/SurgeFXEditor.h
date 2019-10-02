@@ -13,6 +13,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SurgeFXProcessor.h"
 #include "SurgeLookAndFeel.h"
+#include <functional>
+#include <list>
 
 //==============================================================================
 /**
@@ -51,6 +53,16 @@ private:
     void resetLabels();
     
     std::unique_ptr<SurgeLookAndFeel> surgeLookFeel;
-    
+
+    ///
+    void addButtonClickCallback(Button &b, std::function<void()> f);
+    void addSliderValueCallback(Slider &s, std::function<void()> f);
+    void addSliderDragStartCallback(Slider &s, std::function<void()> f);
+    void addSliderDragEndCallback(Slider &s, std::function<void()> f);
+
+    std::list<std::unique_ptr<Button::Listener>> buttonListeners;
+    std::list<std::unique_ptr<Slider::Listener>> sliderListeners;
+    ///
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SurgefxAudioProcessorEditor)
 };

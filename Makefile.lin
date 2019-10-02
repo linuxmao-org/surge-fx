@@ -1,43 +1,42 @@
+# -*- makefile -*-
 # This makefile just assembles assets and runs jucer and stuff.
 # And right now is macos only
 
 SURGE_FX_VERSION=$(shell git rev-parse --short HEAD)
 BUILDDATE=$(shell date +%Y%m%d)
 
+PROJUCER = assets/JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer
+
 all: build
+
+build:
+	$(MAKE) -C Builds/LinuxMakefile CONFIG=Release
+
+debug:
+	$(MAKE) -C Builds/LinuxMakefile CONFIG=Debug
 
 assets:
 	mkdir -p assets
+	cd assets && ln -nsf ../thirdparty/JUCE JUCE
 
-assets/juce-5.4.3-linux.zip:
-	curl -o assets/juce-5.4.3-linux.zip https://d30pueezughrda.cloudfront.net/juce/juce-5.4.3-linux.zip
-	cd assets && unzip juce-5.4.3-linux.zip
+$(PROJUCER): assets
+	$(MAKE) -C assets/JUCE/extras/Projucer/Builds/LinuxMakefile
 
-assets/JUCE: assets assets/juce-5.4.3-linux.zip
-
-Builds/LinuxMakefile/Makefile:	assets/JUCE surge-fx.jucer
-	./scripts/vst_jucer.sh > /tmp/surge-fx.jucer
-	cp surge-fx.jucer surge-fx.jucer~
-	cp /tmp/surge-fx.jucer .
-	assets/JUCE/Projucer --resave surge-fx.jucer
-	rm surge-fx.jucer
-	mv surge-fx.jucer~ surge-fx.jucer
-	touch $@
-
-build:	Builds/LinuxMakefile/Makefile
-	cd Builds/LinuxMakefile && make -j 4
+resave: $(PROJUCER)
+	$(PROJUCER) --resave surge-fx.jucer
+	echo "include ../../build/lv2.mak" >> Builds/LinuxMakefile/Makefile
 
 zip: build
 	mkdir -p products/surge-fx
-	cp Builds/LinuxMakefile/build/SurgeEffectsBank products/surge-fx
+	cp -f Builds/LinuxMakefile/build/SurgeEffectsBank products/surge-fx
+	cp -f Builds/LinuxMakefile/build/SurgeEffectsBank.so products/surge-fx
 	cd products && tar cvzf surge-fx-$(SURGE_FX_VERSION)-$(BUILDDATE).tar.gz surge-fx
 	rm -rf products/surge-fx
 
-
 clean:
-	cd Builds/LinuxMakefile && make clean
+	$(MAKE) -C Builds/LinuxMakefile clean
 
 super-clean:
-	rm -rf Builds JuceLibraryCode 
+	rm -rf Builds JuceLibraryCode
 
-
+.PHONY: all build debug assets resave zip clean super-clean

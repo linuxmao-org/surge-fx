@@ -32,16 +32,16 @@ SurgefxAudioProcessorEditor::SurgefxAudioProcessorEditor (SurgefxAudioProcessor&
         fxParamSliders[i].setBounds(position);
         fxParamSliders[i].setChangeNotificationOnlyOnRelease(false);
         fxParamSliders[i].setEnabled(processor.getParamEnabled(i));
-        fxParamSliders[i].onValueChange = [i, this]() {
+        addSliderValueCallback(fxParamSliders[i], [i, this]() {
             this->processor.setFXParamValue01(i, this->fxParamSliders[i].getValue() );
             fxParamDisplay[i].setDisplay(processor.getParamValueFromFloat(i, this->fxParamSliders[i].getValue()));
-        };
-        fxParamSliders[i].onDragStart = [i,this]() {
+        });
+        addSliderDragStartCallback(fxParamSliders[i], [i,this]() {
             this->processor.setUserEditingFXParam(i,true);
-        };
-        fxParamSliders[i].onDragEnd = [i,this]() {
+        });
+        addSliderDragEndCallback(fxParamSliders[i], [i,this]() {
             this->processor.setUserEditingFXParam(i,false);
-        };
+        });
         addAndMakeVisible(&(fxParamSliders[i]));
 
         juce::Rectangle<int> tsPos {  ( i / 6 ) * getWidth() / 2 + 2 + 55,
@@ -51,13 +51,13 @@ SurgefxAudioProcessorEditor::SurgefxAudioProcessorEditor (SurgefxAudioProcessor&
         fxTempoSync[i].setBounds(tsPos);
         fxTempoSync[i].setEnabled(processor.canTempoSync(i));
         fxTempoSync[i].setToggleState(processor.getFXStorageTempoSync(i), NotificationType::dontSendNotification);
-        fxTempoSync[i].onClick = [i, this]() {
+        addButtonClickCallback(fxTempoSync[i], [i, this]() {
             this->processor.setUserEditingTemposync(i, true);
             this->processor.setFXParamTempoSync(i, this->fxTempoSync[i].getToggleState() );
             this->processor.setFXStorageTempoSync(i, this->fxTempoSync[i].getToggleState() );
             fxParamDisplay[i].setDisplay(processor.getParamValueFromFloat(i, this->fxParamSliders[i].getValue()));
             this->processor.setUserEditingTemposync(i, false);
-        };
+        });
 
         addAndMakeVisible(&(fxTempoSync[i]));
         
@@ -88,7 +88,7 @@ SurgefxAudioProcessorEditor::SurgefxAudioProcessorEditor (SurgefxAudioProcessor&
         selectType[i].setRadioGroupId(FxTypeGroup);
         selectType[i].setBounds(bpos);
         selectType[i].setClickingTogglesState(true);
-        selectType[i].onClick = [this,i] { this->setEffectType(i+1); };
+        addButtonClickCallback(selectType[i], [this,i] { this->setEffectType(i+1); });
         if( i == en )
         {
             selectType[i].setToggleState(true,  NotificationType::dontSendNotification);
@@ -175,4 +175,67 @@ void SurgefxAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+}
+
+//==============================================================================
+void SurgefxAudioProcessorEditor::addButtonClickCallback(Button &b, std::function<void()> f)
+{
+    class Listener : public Button::Listener {
+    public:
+        explicit Listener(std::function<void()> f) : f(std::move(f)) {}
+        void buttonClicked(Button *) override { f(); };
+    private:
+        std::function<void()> f;
+    };
+
+    std::unique_ptr<Listener> l(new Listener(std::move(f)));
+    b.addListener(l.get());
+    buttonListeners.push_back(std::move(l));
+}
+
+void SurgefxAudioProcessorEditor::addSliderValueCallback(Slider &s, std::function<void()> f)
+{
+    class Listener : public Slider::Listener {
+    public:
+        explicit Listener(std::function<void()> f) : f(std::move(f)) {}
+        void sliderValueChanged(Slider *) override { f(); };
+    private:
+        std::function<void()> f;
+    };
+
+    std::unique_ptr<Listener> l(new Listener(std::move(f)));
+    s.addListener(l.get());
+    sliderListeners.push_back(std::move(l));
+}
+
+void SurgefxAudioProcessorEditor::addSliderDragStartCallback(Slider &s, std::function<void()> f)
+{
+    class Listener : public Slider::Listener {
+    public:
+        explicit Listener(std::function<void()> f) : f(std::move(f)) {}
+        void sliderValueChanged(Slider *) override {};
+        void sliderDragStarted(Slider *) override { f(); };
+    private:
+        std::function<void()> f;
+    };
+
+    std::unique_ptr<Listener> l(new Listener(std::move(f)));
+    s.addListener(l.get());
+    sliderListeners.push_back(std::move(l));
+}
+
+void SurgefxAudioProcessorEditor::addSliderDragEndCallback(Slider &s, std::function<void()> f)
+{
+    class Listener : public Slider::Listener {
+    public:
+        explicit Listener(std::function<void()> f) : f(std::move(f)) {}
+        void sliderValueChanged(Slider *) override {};
+        void sliderDragEnded(Slider *) override { f(); };
+    private:
+        std::function<void()> f;
+    };
+
+    std::unique_ptr<Listener> l(new Listener(std::move(f)));
+    s.addListener(l.get());
+    sliderListeners.push_back(std::move(l));
 }

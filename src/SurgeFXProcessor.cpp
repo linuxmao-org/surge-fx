@@ -59,9 +59,10 @@ SurgefxAudioProcessor::SurgefxAudioProcessor()
         fxBaseParams[i + n_fx_params + 1] = fxTempoSync[i];
     }
 
+    addListener(this);
+
     for( int i=0; i< 2 * n_fx_params + 1; ++i )
     {
-        fxBaseParams[i]->addListener(this);
         changedParams[i] = false;
         isUserEditing[i] = false;
     }

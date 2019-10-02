@@ -23,7 +23,7 @@
 /**
 */
 class SurgefxAudioProcessor  : public AudioProcessor,
-    public AudioProcessorParameter::Listener,
+    public AudioProcessorListener,
     public AsyncUpdater
 {
 public:
@@ -99,10 +99,10 @@ public:
     {
         return fxstorage->p[fx_param_remap[i]].can_temposync();
     }
-    
-    virtual void parameterValueChanged(int parameterIndex, float newValue ) override {
+
+    void audioProcessorParameterChanged(AudioProcessor *, int parameterIndex, float newValue) override {
         if( supressParameterUpdates ) return;
-        
+
         if( ! isUserEditing[parameterIndex] )
         {
             // this order does matter
@@ -112,9 +112,8 @@ public:
         }
     }
 
-    virtual void parameterGestureChanged(int parameterIndex, bool gestureStarting ) override {
+    void audioProcessorChanged (AudioProcessor *) override {
     }
-
 
     virtual void handleAsyncUpdate() override {
         paramChangeListener();

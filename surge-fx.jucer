@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="wrl6Y0" name="SurgeEffectsBank" projectType="audioplug" jucerVersion="5.4.3"
+<JUCERPROJECT id="wrl6Y0" name="SurgeEffectsBank" projectType="audioplug" jucerVersion="5.1.2"
               companyName="Surge Synth Team" companyCopyright="Copyright Various Authors, 2019"
               companyWebsite="https://surge-synthesizer.github.io/" pluginManufacturerCode="VmbA"
-              pluginCode="SFXB" pluginFormats="buildAU,buildStandalone,buildVST3">
+              pluginCode="SFXB" pluginFormats="buildAU,buildStandalone,buildVST3"
+              displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
+              version="1.0.0" buildVST="1" buildVST3="0" buildAU="1" buildAUv3="0"
+              buildRTAS="0" buildAAX="0" buildStandalone="0" enableIAA="0"
+              pluginName="SurgeEffectsBank" pluginDesc="SurgeEffectsBank" pluginManufacturer="yourcompany"
+              pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="0"
+              pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
+              pluginAUExportPrefix="SurgeEffectsBankAU" pluginRTASCategory=""
+              bundleIdentifier="com.yourcompany.SurgeEffectsBank" aaxIdentifier="com.yourcompany.SurgeEffectsBank"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" includeBinaryInAppConfig="1"
+              cppLanguageStandard="11" defines="JucePlugin_Build_LV2=1&#10;JucePlugin_LV2URI=\&quot;https://surge-synthesizer.github.io/lv2/surgefx\&quot;">
   <MAINGROUP id="cR50fn" name="SurgeEffectsBank">
     <GROUP id="{55EE2475-B339-9B2B-B553-4D5F86AA5924}" name="surge">
       <GROUP id="{3465AAA3-E150-030D-1085-66D9F3951410}" name="resources">
@@ -221,8 +231,8 @@
     <XCODE_MAC targetFolder="Builds/MacOSX" vst3Folder="deps/surge/vst3sdk"
                extraCompilerFlags="-DJUCE_DISPLAY_SPLASH_SCREEN=0 -DJUCE_REPORT_APP_USAGE=0 -DMAC=1 -DTARGET_HEADLESS=1 -I../../deps/surge/src/common -I../../deps/surge/src/common/dsp -I../../deps/surge/src/common/dsp/effects -I../../deps/surge/libs/xml -I../../deps/surge/libs/filesystem -I../../deps/surge/src/headless -Wno-c++17-extensions -D_aligned_malloc(x,a)=malloc(x) -D_aligned_free(x)=free(x)">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug"/>
-        <CONFIGURATION isDebug="0" name="Release"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="SurgeEffectsBank"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="SurgeEffectsBank"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="./assets/JUCE/modules"/>
@@ -244,9 +254,12 @@
     <VS2017 targetFolder="Builds/VisualStudio2017" extraCompilerFlags="/FI precompiled.h /DNOMINMAX=1 /DJUCE_DISPLAY_SPLASH_SCREEN=0 /DTIXML_USE_STL /DWIN32 /DJUCE_REPORT_APP_USAGE=0 /DWINDOWS=1 /DTARGET_HEADLESS=1 /Mp /Zc:alignedNew /std:c++17 /bigobj /I../../deps/surge/src/common -I../../deps/surge/src/common/dsp -I../../deps/surge/src/common/dsp/effects -I../../deps/surge/libs/xml -I../../deps/surge/src/headless"
             extraLinkerFlags="">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug"/>
-        <CONFIGURATION isDebug="0" name="Release"/>
-        <CONFIGURATION isDebug="0" name="ReleaseWin32" winArchitecture="Win32" defines="/DWIN_X86=1"/>
+        <CONFIGURATION isDebug="1" name="Debug" winWarningLevel="4" generateManifest="1"
+                       winArchitecture="x64" targetName="SurgeEffectsBank"/>
+        <CONFIGURATION isDebug="0" name="Release" winWarningLevel="4" generateManifest="1"
+                       winArchitecture="x64" targetName="SurgeEffectsBank"/>
+        <CONFIGURATION isDebug="0" name="ReleaseWin32" winArchitecture="Win32" defines="/DWIN_X86=1"
+                       winWarningLevel="4" generateManifest="1" targetName="SurgeEffectsBank"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="./assets/JUCE/modules"/>
@@ -269,8 +282,8 @@
                 extraLinkerFlags="-lstdc++fs -pthread" extraCompilerFlags="-fPIC -DJUCE_DISPLAY_SPLASH_SCREEN=0 -DJUCE_REPORT_APP_USAGE=0 -DLINUX=1 -DTARGET_HEADLESS=1 -I../../deps/surge/src/linux -I../../deps/surge/src/common -I../../deps/surge/src/common/dsp -I../../deps/surge/src/common/dsp/effects -I../../deps/surge/libs/xml -I../../deps/surge/libs/filesystem&#10;-I../../deps/surge/src/headless -I../../src -include LinuxAligned.h"
                 vstLegacyFolder="VST2SDK_DIR">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="0" name="Debug"/>
-        <CONFIGURATION isDebug="1" name="Release"/>
+        <CONFIGURATION isDebug="0" name="Debug" targetName="SurgeEffectsBank"/>
+        <CONFIGURATION isDebug="1" name="Release" targetName="SurgeEffectsBank"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="./assets/JUCE/modules"/>
@@ -312,7 +325,5 @@
     <LINUX/>
     <WINDOWS/>
   </LIVE_SETTINGS>
-  <JUCEOPTIONS JUCE_VST3_CAN_REPLACE_VST2="0" JUCE_STRICT_REFCOUNTEDPOINTER="1"
-               JUCE_PLUGINHOST_VST3="1" JUCE_PLUGINHOST_AU="1" JUCE_PLUGINHOST_VST="0"
-               JUCE_JACK="1" JUCE_WEB_BROWSER="0"/>
+  <JUCEOPTIONS JUCE_WEB_BROWSER="disabled"/>
 </JUCERPROJECT>
