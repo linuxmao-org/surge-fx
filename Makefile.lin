@@ -1,3 +1,4 @@
+# -*- makefile -*-
 # This makefile just assembles assets and runs jucer and stuff.
 # And right now is macos only
 
@@ -12,8 +13,12 @@ assets:
 assets/juce-5.4.3-linux.zip:
 	curl -o assets/juce-5.4.3-linux.zip https://d30pueezughrda.cloudfront.net/juce/juce-5.4.3-linux.zip
 	curl -o assets/juce-5.4.3-gcc9.patch https://github.com/WeAreROLI/JUCE/commit/4e0adb2af8b424c43d22bd431011c9a6c57d36b6.patch
+	curl -o assets/juce_VSTInterface.h https://raw.githubusercontent.com/WeAreROLI/JUCE/5.3.2/modules/juce_audio_processors/format_types/juce_VSTInterface.h
 	cd assets && unzip juce-5.4.3-linux.zip
 	patch -N -p1 -d assets/JUCE -i ../juce-5.4.3-gcc9.patch
+# backport patch for linuxVST based on JUCE GPL 5.3.2
+	patch -N -p1 -d assets/JUCE -i ../../patch/juce-linuxvst-5.4.3~surgefx.diff
+	cd assets && cp juce_VSTInterface.h JUCE/modules/juce_audio_processors/format_types/
 
 assets/JUCE: assets assets/juce-5.4.3-linux.zip
 
@@ -21,6 +26,8 @@ Builds/LinuxMakefile/Makefile:	assets/JUCE surge-fx.jucer
 	./scripts/vst_jucer.sh > /tmp/surge-fx.jucer
 	cp surge-fx.jucer surge-fx.jucer~
 	cp /tmp/surge-fx.jucer .
+# enable the linuxVST plugin format
+	sed -r -i -e 's:pluginFormats="(buildVST,)?:pluginFormats="buildVST,:' surge-fx.jucer
 	assets/JUCE/Projucer --resave surge-fx.jucer
 	rm surge-fx.jucer
 	mv surge-fx.jucer~ surge-fx.jucer
