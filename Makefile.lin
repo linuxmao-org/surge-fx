@@ -9,10 +9,10 @@ PROJUCER = assets/JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer
 
 all: build
 
-build:
+build: assets
 	$(MAKE) -C Builds/LinuxMakefile CONFIG=Release
 
-debug:
+debug: assets
 	$(MAKE) -C Builds/LinuxMakefile CONFIG=Debug
 
 assets:
