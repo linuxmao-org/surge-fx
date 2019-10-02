@@ -36,7 +36,5 @@ zip: build
 clean:
 	$(MAKE) -C Builds/LinuxMakefile clean
 
-super-clean:
-	rm -rf Builds JuceLibraryCode
 
-.PHONY: all build debug assets resave zip clean super-clean
+.PHONY: all build debug assets resave zip clean
